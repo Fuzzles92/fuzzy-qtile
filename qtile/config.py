@@ -3,12 +3,13 @@
 #==========================================#
 import os
 import subprocess
+import colors
 from libqtile import bar, layout, qtile, widget
-from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile.config import Click, Drag, Group, ScratchPad, DropDown, Key, Match, Screen
 from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile import hook
-import colors
+
 
 #==========================================#
 #         Required Software                #
@@ -17,7 +18,8 @@ import colors
 # rofi
 # pavucontrol
 # alsa-utils
-#picom
+# picom
+# blueman (Bluetooth)
 
 #==========================================#
 #         Start Up Applications            #
@@ -27,17 +29,22 @@ def autostart():
     home = os.path.expanduser('~/.config/qtile/autostart.sh')
     subprocess.call(home)
 
+#==========================================#
+#          Software Variables              #
+#==========================================#
 mod = "mod4"           # Super/Windows Key
-myTerm = guess_terminal()    # My terminal of choice
+myTerm = "alacritty"    # My terminal of choice
 myBrowser = "firefox"  # My browser of choice
 myFileManager = "dolphin" # Dolphin File Manager"
+myEmail = "thunderbird" # Email Client
+myMusic = "spotify-launcher" # Music
 
 #==========================================#
 #                  Keys                    #
 #==========================================#
 keys = [
     # Essentials
-    Key([mod], "Return", lazy.spawn(myTerm), desc="Terminal"),
+    Key([mod], "return", lazy.spawn(myTerm), desc="Terminal"),
     Key([mod], "w", lazy.spawn(myBrowser), desc='Web browser'),
     Key([mod], "m", lazy.spawn(myFileManager), desc='File Manager'),
     Key([mod], "b", lazy.hide_show_bar(position='all'), desc="Toggles the bar to show/hide"),
@@ -106,6 +113,7 @@ for vt in range(1, 8):
 #             Group Settings               #
 #==========================================#
 groups = []
+
 group_names = ["1", "2", "3", "4", "5","6"]
 group_labels = ["", # Python Logo
                 "", # Internet (Earth)
@@ -114,8 +122,8 @@ group_labels = ["", # Python Logo
                 "", #Social
                 ""] # Music Note
 
-# The default layout for each of the 5 workspaces
-group_layouts = ["monadtall", "monadtall", "monadtall", "monadtall", "monadtall", "monadtall"]
+# The default layout for each of the 5 workspacesm
+group_layouts = ["columns", "columns", "columns", "columns", "columns", "columns"]
 
 for i in range(len(group_names)):
     groups.append(
@@ -146,12 +154,34 @@ for i in groups:
     )
 
 #==========================================#
+#          Scratchpad Settings             #
+#==========================================#
+groups.append(
+     ScratchPad("scratchpad", [
+         DropDown("term", myTerm, width=0.8, height=0.6, x=0.1, y=0.1, opacity=1),
+         DropDown("files", myFileManager, width=0.8, height=0.6, x=0.1, y=0.1, opacity=1),
+         DropDown("music", myMusic, width=0.8, height=0.6, x=0.1, y=0.1, opacity=1),
+     ])
+ )
+
+keys.extend([
+    Key([mod], "f1", lazy.group["scratchpad"].dropdown_toggle("term"), desc="Toggle terminal scratchpad"),
+    Key([mod], "f2", lazy.group["scratchpad"].dropdown_toggle("files"), desc="Toggle file manager scratchpad"),
+    Key([mod], "f3", lazy.group["scratchpad"].dropdown_toggle("music"), desc="Toggle music scratchpad"),
+])
+
+#==========================================#
 #             Colour & Themeing            #
 #==========================================#
-colors = colors.DoomOne
+#colors = colors.DoomOne
+#colors = colors.MonokaiPro
+colors = colors.Nord
+#colors = colors.OceanicNext
+#colors = colors.Palenight
+#colors = colors.TomorrowNight
 
 layout_theme = {"border_width": 2,
-                "margin": 10,
+                "margin": 5,
                 "border_focus": colors[8],
                 "border_normal": colors[0]
                 }
@@ -192,26 +222,26 @@ extension_defaults = widget_defaults.copy()
 
 screens = [
     Screen(
-        wallpaper = '~/.config/qtile/wallpaper/dwarf_fortress.jpeg',
+        wallpaper = '~/.config/qtile/wallpaper/nord.png',
         wallpaper_mode = 'fill',
 
         top=bar.Bar(
             [
-                widget.TextBox(
-                    text='',
-                    font = "Ubuntu Mono",
-                    foreground = colors[9],
-                    padding = 8,
-                    fontsize = 18,
-                    mouse_callbacks={"Button1": lazy.spawn("rofi -show drun")},
-                ),
-                widget.TextBox(
-                        text = '|',
-                        font = "Ubuntu Mono",
-                        foreground = colors[9],
-                        padding = 2,
-                        fontsize = 14
-                        ),
+                # widget.TextBox(
+                #     text='',
+                #     font = "Ubuntu Mono",
+                #     foreground = colors[9],
+                #     padding = 8,
+                #     fontsize = 18,
+                #     mouse_callbacks={"Button1": lazy.spawn("rofi -show drun")},
+                # ),
+                # widget.TextBox(
+                #         text = '|',
+                #         font = "Ubuntu Mono",
+                #         foreground = colors[9],
+                #         padding = 2,
+                #         fontsize = 14
+                #         ),
                 widget.Prompt(
                         font = "Ubuntu Mono",
                         fontsize=14,
@@ -241,18 +271,51 @@ screens = [
                         padding = 2,
                         fontsize = 14
                         ),
-                widget.LaunchBar(
-                        progs = [("🦊", "firefox", "Firefox Browser"),
-                                 ("✉️", "thunderbird", "Email Client"),
-                                 ("🚀", "konsole", "Konsole Rerminal"),
-                                #("📁", "pcmanfm", "PCManFM file manager"),
-                                 ("📁", "dolphin", "Dolphin File Manager"),
-                                 ("🎧", "spotify-launcher", "Spotify Player")
-                                ],
+                # widget.LaunchBar(
+                #         progs = [("🦊", "firefox", "Firefox Browser"),
+                #                  ("✉️", "thunderbird", "Email Client"),
+                #                  ("🚀", "konsole", "Konsole Rerminal"),
+                #                 #("📁", "pcmanfm", "PCManFM file manager"),
+                #                  ("📁", "dolphin", "Dolphin File Manager"),
+                #                  ("🎧", "spotify-launcher", "Spotify Player")
+                #                 ],
+                #         fontsize = 12,
+                #         padding = 12,
+                #         foreground = colors[3],
+                # ),
+                widget.TextBox(
+                        text="🦊",
+                        mouse_callbacks={"Button1": lazy.spawn(myBrowser)},
                         fontsize = 12,
-                        padding = 12,
+                        padding = 8,
                         foreground = colors[3],
-                ),
+                        ),
+                widget.TextBox(
+                        text="✉️",
+                        mouse_callbacks={"Button1": lazy.spawn(myEmail)},
+                        fontsize = 12,
+                        padding = 8,
+                        foreground = colors[3],
+                        ),
+                # widget.TextBox(
+                #         text="🚀",
+                #         mouse_callbacks={"Button1": lazy.spawn(myTerm)},
+                #         fontsize = 12,
+                #         padding = 8,
+                #         foreground = colors[3],
+                #         ),
+                widget.TextBox(
+                        text="📁",
+                        mouse_callbacks={"Button1": lazy.spawn(myFileManager)},
+                        fontsize = 12,
+                        padding = 8,
+                        foreground = colors[3],
+                        ),
+                widget.TextBox(
+                        text="🎧",
+                        mouse_callbacks={"Button1": lazy.spawn(myMusic)},
+                        padding=5
+                        ),
                 widget.TextBox(
                         text = '|',
                         font = "Ubuntu Mono",
@@ -260,9 +323,14 @@ screens = [
                         padding = 2,
                         fontsize = 14
                         ),
+                widget.CurrentLayoutIcon(
+                        padding = 5,
+                        scale=0.7,
+                        foreground = colors[1],
+                            ),
                 widget.CurrentLayout(
                         foreground = colors[1],
-                        padding = 5
+                        padding = 5,
                         ),
                 widget.TextBox(
                         text = '|',
@@ -366,6 +434,8 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
+        #Match(wm_class="Pavucontrol"),
+
     ]
 )
 auto_fullscreen = True
