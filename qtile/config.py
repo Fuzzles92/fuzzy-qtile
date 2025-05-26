@@ -10,6 +10,8 @@ from libqtile.lazy import lazy
 from libqtile.utils import guess_terminal
 from libqtile import hook
 
+#from qtile_extras import widget
+#from qtile_extras.widget.decorations import RoundedRectDecoration
 
 #==========================================#
 #         Required Software                #
@@ -116,11 +118,11 @@ groups = []
 
 group_names = ["1", "2", "3", "4", "5","6"]
 group_labels = ["", # Python Logo
-                "", # Internet (Earth)
-                "", # Folder
-                "", # Gamepad
-                "", #Social
-                ""] # Music Note
+               "", # Internet (Earth)
+               "", # Folder
+               "", # Gamepad
+               "", #Social
+               ""] # Music Note
 
 # The default layout for each of the 5 workspacesm
 group_layouts = ["columns", "columns", "columns", "columns", "columns", "columns"]
@@ -180,7 +182,7 @@ colors = colors.Nord
 #colors = colors.Palenight
 #colors = colors.TomorrowNight
 
-layout_theme = {"border_width": 2,
+layout_theme = {"border_width": 4,
                 "margin": 5,
                 "border_focus": colors[8],
                 "border_normal": colors[0]
@@ -199,10 +201,8 @@ layouts = [
     # layout.Stack(num_stacks=2),
     # layout.Bsp(),
     # layout.Matrix(),
-    # layout.MonadTall(),
     # layout.MonadWide(),
     # layout.RatioTile(),
-    # layout.Tile(),
     # layout.TreeTab(),
     # layout.VerticalTile(),
     # layout.Zoomy(),
@@ -227,21 +227,6 @@ screens = [
 
         top=bar.Bar(
             [
-                # widget.TextBox(
-                #     text='',
-                #     font = "Ubuntu Mono",
-                #     foreground = colors[9],
-                #     padding = 8,
-                #     fontsize = 18,
-                #     mouse_callbacks={"Button1": lazy.spawn("rofi -show drun")},
-                # ),
-                # widget.TextBox(
-                #         text = '|',
-                #         font = "Ubuntu Mono",
-                #         foreground = colors[9],
-                #         padding = 2,
-                #         fontsize = 14
-                #         ),
                 widget.Prompt(
                         font = "Ubuntu Mono",
                         fontsize=14,
@@ -271,18 +256,6 @@ screens = [
                         padding = 2,
                         fontsize = 14
                         ),
-                # widget.LaunchBar(
-                #         progs = [("🦊", "firefox", "Firefox Browser"),
-                #                  ("✉️", "thunderbird", "Email Client"),
-                #                  ("🚀", "konsole", "Konsole Rerminal"),
-                #                 #("📁", "pcmanfm", "PCManFM file manager"),
-                #                  ("📁", "dolphin", "Dolphin File Manager"),
-                #                  ("🎧", "spotify-launcher", "Spotify Player")
-                #                 ],
-                #         fontsize = 12,
-                #         padding = 12,
-                #         foreground = colors[3],
-                # ),
                 widget.TextBox(
                         text="🦊",
                         mouse_callbacks={"Button1": lazy.spawn(myBrowser)},
@@ -297,13 +270,6 @@ screens = [
                         padding = 8,
                         foreground = colors[3],
                         ),
-                # widget.TextBox(
-                #         text="🚀",
-                #         mouse_callbacks={"Button1": lazy.spawn(myTerm)},
-                #         fontsize = 12,
-                #         padding = 8,
-                #         foreground = colors[3],
-                #         ),
                 widget.TextBox(
                         text="📁",
                         mouse_callbacks={"Button1": lazy.spawn(myFileManager)},
@@ -400,9 +366,29 @@ screens = [
                         ## Uncomment for time only
                         #format = "⧗  %I:%M %p",
                         ),
+                widget.TextBox(
+                        text = '|',
+                        font = "Ubuntu Mono",
+                        foreground = colors[9],
+                        padding = 2,
+                        fontsize = 14
+                        ),
                 widget.Systray(padding = 6),
-                widget.Spacer(length = 8),
-                widget.QuickExit()
+                widget.TextBox(
+                        text = '|',
+                        font = "Ubuntu Mono",
+                        foreground = colors[9],
+                        padding = 2,
+                        fontsize = 14
+                        ),
+
+                widget.QuickExit(
+                    default_text='  ',
+                    countdown_format ='[{}]',
+                    countdown_start = 5,
+                    padding = 2,
+                    ),
+                widget.Spacer(length = 4),
             ],
             22,
         ),
@@ -434,8 +420,6 @@ floating_layout = layout.Floating(
         Match(wm_class="ssh-askpass"),  # ssh-askpass
         Match(title="branchdialog"),  # gitk
         Match(title="pinentry"),  # GPG key password entry
-        #Match(wm_class="Pavucontrol"),
-
     ]
 )
 auto_fullscreen = True
