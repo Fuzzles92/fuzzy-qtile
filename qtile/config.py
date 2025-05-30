@@ -22,6 +22,8 @@ from libqtile import hook
 # alsa-utils
 # picom
 # blueman (Bluetooth)
+# flameshot
+# python-pywlroots # Wayland
 
 #==========================================#
 #         Start Up Applications            #
@@ -54,6 +56,7 @@ keys = [
     Key([mod, "shift"], "r", lazy.reload_config(), desc="Reload the config"),
     Key([mod, "shift"], "q", lazy.spawn("dm-logout -r"), desc="Logout menu"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod], "print", lazy.spawn("flameshot gui"), desc="Screenshot tool"),
 
     # Volume Controls using pactl (PulseAudio)
     Key([mod], "F10", lazy.spawn("pactl set-sink-volume @DEFAULT_SINK@ -5%")), # Decrease
@@ -373,7 +376,12 @@ screens = [
                         padding = 2,
                         fontsize = 14
                         ),
-                widget.Systray(padding = 6),
+                # widget.StatusNotifier(
+                #     padding = 6
+                #     ),
+                widget.Systray(
+                   padding = 6
+                   ),
                 widget.TextBox(
                         text = '|',
                         font = "Ubuntu Mono",
