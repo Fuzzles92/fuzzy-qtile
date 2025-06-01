@@ -23,6 +23,7 @@ from libqtile import hook
 # picom
 # blueman (Bluetooth)
 # flameshot
+# copyq #clipboard
 # python-pywlroots # Wayland
 
 #==========================================#
@@ -52,9 +53,9 @@ keys = [
     Key([mod], "w", lazy.spawn(myBrowser), desc='Web browser'),
     Key([mod], "m", lazy.spawn(myFileManager), desc='File Manager'),
     Key([mod], "b", lazy.hide_show_bar(position='all'), desc="Toggles the bar to show/hide"),
-    Key([mod, "shift"], "c", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod], "q", lazy.window.kill(), desc="Kill focused window"),
     Key([mod, "shift"], "r", lazy.reload_config(), desc="Reload the config"),
-    Key([mod, "shift"], "q", lazy.spawn("dm-logout -r"), desc="Logout menu"),
+    #Key([mod, "shift"], "q", lazy.spawn("dm-logout -r"), desc="Logout menu"),
     Key([mod], "r", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
     Key([mod], "print", lazy.spawn("flameshot gui"), desc="Screenshot tool"),
 
@@ -64,7 +65,7 @@ keys = [
     Key([mod], "F12", lazy.spawn("pactl set-sink-mute @DEFAULT_SINK@ toggle")), # Mute
 
     # Add Rofi
-    Key([mod, "shift"], "Return", lazy.spawn("rofi -show drun -show-icons"), desc='Run Launcher'),
+    Key([mod], "space", lazy.spawn("rofi -show drun -show-icons"), desc='Run Launcher'),
 
     # Switch between windows
     Key([mod], "left", lazy.layout.left(), desc="Move focus to left"),
@@ -320,17 +321,26 @@ screens = [
                             no_update_string=' 0',
                             colour_have_updates=colors[7][0],
                             colour_no_updates= colors[4],
+                            padding = 8,
                             mouse_callbacks={
                                 'Button1': lambda: qtile.cmd_spawn('alacritty -e sudo pacman -Syu')
                                             },
                             ),
-                widget.GenPollText(
-                        update_interval = 300,
-                        func = lambda: subprocess.check_output("printf $(uname -r)", shell=True, text=True),
-                        foreground = colors[3],
-                        padding = 8,
-                        fmt = '❤  {}',
-                        ),
+                widget.Bluetooth(
+                    foreground = colors[3],
+                    padding = 8,
+                    default_text=' {connected_devices}',
+                    default_show_battery='True',
+                    mouse_callbacks={
+                    'Button1': lambda: qtile.cmd_spawn('blueman-manager')},
+                    ),
+                # widget.GenPollText(
+                #         update_interval = 300,
+                #         func = lambda: subprocess.check_output("printf $(uname -r)", shell=True, text=True),
+                #         foreground = colors[3],
+                #         padding = 8,
+                #         fmt = '❤  {}',
+                #         ),
                 widget.CPU(
                         foreground = colors[4],
                         padding = 8,

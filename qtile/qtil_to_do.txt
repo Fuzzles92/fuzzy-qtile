@@ -1,0 +1,2 @@
+* file manager not opening text files with kate
+* add app launcher to bar
